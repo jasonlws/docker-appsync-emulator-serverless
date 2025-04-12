@@ -1,0 +1,182 @@
+service: my-appsync-simulator
+
+provider:
+  name: aws
+  region: us-west-2
+  runtime: nodejs18.x
+
+plugins:
+  - serverless-dynamodb
+  - serverless-appsync-plugin
+  - serverless-appsync-simulator
+  - serverless-offline
+
+# appSync:
+#   name: MyAppSyncAPI
+#   authentication:
+#     type: API_KEY
+#   schema: 
+#     - '.graphql/schema.graphql'
+#   dataSources:
+#     dataSourceChild:
+#       type: AMAZON_DYNAMODB
+#       description: "Child"
+#       config:
+#         tableName: Child
+
+# appSync:
+#   name: "MyAppSyncAPI"
+#   authentication:
+#     type: API_KEY
+#   apiKeys:
+#     - da2-fakeApiId123456
+#     - name: da2-fakeApiId123456
+#   schema: 
+#     - '.graphql/schema.graphql'
+#   dataSources:
+#     dataSourceChild:
+#       type: AMAZON_DYNAMODB
+#       description: "Child"
+#       config:
+#         tableName: Child
+    
+custom:
+  serverless-dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      docker: false
+      migrate: true
+      seed: true
+      # region: 'us-west-1'
+    seed:
+      dev:
+        sources:
+          - table: Child
+            sources: [./migrations/child.json]
+          # - table: Parent
+          #   sources: [./migrations/parent.json]
+
+  appsync-simulator:
+    apiKey: "da2-fakeApiId123456"
+    port: 20002
+    dynamoDb:
+      accessKeyId: MockAccessKeyId
+      secretAccessKey: MockSecretAccessKey
+    # watch: false
+    watch:
+      - "*.vtl"
+      - "*.graphql"
+
+  appSync:
+    name: "MyAppSyncAPI"
+    authenticationType: API_KEY
+    apiKeys:
+      - name: da2-fakeApiId123456
+    schema: 
+      - '.graphql/schema.graphql'
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: dataSourceChild
+        description: "Child"
+        config:
+          tableName: Child
+    mappingTemplatesLocation: "./.graphql/mapping-templates"
+    mappingTemplates: [
+      {
+        dataSource: "dataSourceChild",
+        type: "Query",
+        field: "getChild",
+        request: "Query.getChild.request.vtl",
+        response: "Query.getChild.response.vtl",
+      },
+      {
+        dataSource: "dataSourceChild",
+        type: "Query",
+        field: "searchChild",
+        request: "Query.searchChild.request.vtl",
+        response: "Query.searchChild.response.vtl",
+      },
+      {
+        dataSource: "dataSourceChild",
+        type: "Query",
+        field: "listChild",
+        request: "Query.listChild.request.vtl",
+        response: "Query.listChild.response.vtl",
+      },
+      {
+        dataSource: "dataSourceChild",
+        type: "Mutation",
+        field: "createChild",
+        request: "Mutation.createChild.request.vtl",
+        response: "Mutation.createChild.response.vtl",
+      },
+      {
+        dataSource: "dataSourceChild",
+        type: "Mutation",
+        field: "updateChild",
+        request: "Mutation.updateChild.request.vtl",
+        response: "Mutation.updateChild.response.vtl",
+      },
+      {
+        dataSource: "dataSourceChild",
+        type: "Mutation",
+        field: "modifyChild",
+        request: "Mutation.modifyChild.request.vtl",
+        response: "Mutation.modifyChild.response.vtl",
+      }
+    ]
+  # resolvers:
+  #   Query.child:
+  #     kind: UNIT
+  #     dataSource: 
+  #       type: AMAZON_DYNAMODB
+  #       config:
+  #         tableName: Child
+  #   getChild:
+  #     type: Query
+  #     field: getChild
+  #     request: "./.graphql/mapping-templates/Query.getChild.request.vtl"
+  #     response: "./.graphql/mapping-templates/Query.getChild.response.vtl"
+  #     dataSource: dataSourceChild
+  #   Mutation.createPost:
+  #     dataSource: "PostsTable"
+
+# functions:
+#   graphql:
+#     handler: handler.graphqlHandler
+#     events:
+#       - http:
+#           path: graphql
+#           method: post
+#           cors: true
+
+resources:
+  Resources:
+    # Parent:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: Parent
+    #     AttributeDefinitions:
+    #       - AttributeName: "parentId"
+    #         AttributeType: "S"
+    #     KeySchema:
+    #       - AttributeName: "parentId"
+    #         KeyType: "HASH"
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 1
+    #       WriteCapacityUnits: 1
+    Child:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Child
+        AttributeDefinitions:
+          - AttributeName: "id"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

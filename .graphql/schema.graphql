@@ -1,0 +1,88 @@
+type Child {
+  id: ID!
+  childId: String
+  name: String
+  description: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type ChildList {
+  items: [Child]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelChildFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  phone: ModelStringFilterInput
+  role: ModelStringFilterInput
+  and: [ModelChildFilterInput]
+  or: [ModelChildFilterInput]
+  not: ModelChildFilterInput
+}
+
+input CreateChildInput {
+  id: ID
+  childId: String
+  name: String
+  description: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+input UpdateChildInput {
+  id: ID!
+  childId: String
+  name: String
+  description: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+input ModifyChildInput {
+  id: ID!
+  childId: String
+  name: String
+  description: String
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
+type Query {
+  listChild(filter: ModelChildFilterInput, limit: Int, nextToken: String): ChildList
+  getChild(id: ID!): Child
+  searchChild(id: ID!): Child
+}
+
+type Mutation {
+  createChild(input: CreateChildInput!) : Child
+  updateChild(input: UpdateChildInput!) : Child
+  modifyChild(id: ID!, childId: String, name: String, description: String, createdAt: AWSDateTime, updatedAt: AWSDateTime) : Child
+}

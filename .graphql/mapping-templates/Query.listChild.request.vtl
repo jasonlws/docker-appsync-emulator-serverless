@@ -1,0 +1,15 @@
+#set( $limit = $util.defaultIfNull($context.args.limit, 10) )
+{
+    "operation": "Scan",
+    "filter":   #if( $ctx.args.filter )
+$util.transform.toDynamoDBFilterExpression($ctx.args.filter)
+    #else
+null
+    #end,
+    "limit": $limit,
+    "nextToken":   #if( $ctx.args.nextToken )
+"$ctx.args.nextToken"
+    #else
+null
+    #end
+}

@@ -1,0 +1,29 @@
+[
+    {
+      "id": "6a24e4cd-015d-4cf2-a2c9-024b0e23d2b4",
+      "childId": "C001",
+      "name": "Child Item001",
+      "description": "Child Item001",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "__typename": "Child"
+    },
+    {
+      "id": "00495705-c5c8-42ea-9b61-6a7a6ff1b5b6",
+      "childId": "C002",
+      "name": "Child Item002",
+      "description": "Child Item002",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "__typename": "Child"
+    },
+    {
+      "id": "4ed04139-06cb-4ac6-9e15-25082f27572f",
+      "childId": "C003",
+      "name": "Child Item003",
+      "description": "Child Item003",
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z",
+      "__typename": "Child"
+    }
+  ]

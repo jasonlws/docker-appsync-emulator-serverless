@@ -1,0 +1,22 @@
+services:
+  appsync-simulator:
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    container_name: appsync-simulator
+    ports:
+      - 3000:3000
+      - 8000:8000
+      - 20002:20002
+    environment:
+      - SERVERLESS_ACCESS_KEY=AKHhDJUInwTZwBCLuGncvL6BqAVXWjnDQ6atY0OsGs5RC
+    volumes:
+      - ./serverless.yml:/usr/src/app/serverless.yml
+      - ./.graphql:/usr/src/app/.graphql
+      - ./migrations:/usr/src/app/migrations
+    post_start:
+      - command: 
+        - /bin/sh
+        - -c
+        - |
+          serverless dynamodb install 
+          serverless offline start
+
